@@ -52,11 +52,13 @@ int main(int, char**)
   ImGui::CreateContext(atlas);
   ImGuiIO& io = ImGui::GetIO(); (void)io;
   //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-  //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
   // Setup Dear ImGui style
   ImGui::StyleColorsDark();
   //ImGui::StyleColorsClassic();
+  ImGui::GetStyle().AntiAliasedLines = false;
+  ImGui::GetStyle().AntiAliasedLinesUseTex = false;
+  ImGui::GetStyle().AntiAliasedFill = false;
 
   // Setup Platform/Renderer backends
   ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -122,7 +124,6 @@ int main(int, char**)
   }
 
   // ok build a header file
-  // we need big endian because it's embedded
 
   std::ofstream out("font_atlas.hpp");
 
@@ -179,7 +180,7 @@ int main(int, char**)
 //  ImVector<ImFontAtlasCustomRect> CustomRects;    // Rectangles for packing custom texture data into the atlas.
 //  ImVector<ImFontConfig>      ConfigData;         // Configuration data
 
-  out << "const ImFontAtlasFlags AtlasFlags = " << atlas->Flags << ";\n";
+//  out << "const ImFontAtlasFlags AtlasFlags = " << atlas->Flags << ";\n";
   out << "const int PackedIdLines = " << atlas->PackIdLines << ";\n";
   out << "const int PackIdMouseCursors = " << atlas->PackIdMouseCursors << ";\n";
 
@@ -188,14 +189,6 @@ int main(int, char**)
     out << "ImVec4{" << v.w << ","<<v.x<<","<<v.y<<","<<v.z<<"},\n";
   }
   out << "\n};\n";
-
-  unsigned short  Width, Height;  // Input    // Desired rectangle dimension
-  unsigned short  X, Y;           // Output   // Packed position in Atlas
-  unsigned int    GlyphID;        // Input    // For custom font glyphs only (ID < 0x110000)
-  float           GlyphAdvanceX;  // Input    // For custom font glyphs only: glyph xadvance
-  ImVec2          GlyphOffset;    // Input    // For custom font glyphs only: glyph display offset
-  ImFont*         Font;           // Input    // For custom font glyphs only: target font
-
 
   out << "const ImVec4 CustomRects[" << atlas->CustomRects.size() << "] = {\n";
   for (auto &v : atlas->CustomRects) {
