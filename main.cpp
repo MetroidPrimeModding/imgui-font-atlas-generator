@@ -30,6 +30,8 @@ static void glfw_error_callback(int error, const char* description)
   fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
+
+
 int main(int, char**)
 {
   // Setup window
@@ -45,7 +47,7 @@ int main(int, char**)
   // Setup Dear ImGui context
   IMGUI_CHECKVERSION();
   ImFontAtlas *atlas = new ImFontAtlas();
-  atlas->TexDesiredWidth = 256;
+  atlas->TexDesiredWidth = 128;
   atlas->Flags |= ImFontAtlasFlags_NoMouseCursors;
   ImGui::CreateContext(atlas);
   ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -67,10 +69,15 @@ int main(int, char**)
 
   ImFontConfig fontConfig{};
   fontConfig.SizePixels = 10;
-  fontConfig.OversampleH = 2;
-  fontConfig.OversampleV = 2;
   fontConfig.PixelSnapH = true;
-  fontConfig.GlyphRanges = io.Fonts->GetGlyphRangesDefault();
+  fontConfig.OversampleH = 1;
+  fontConfig.OversampleV = 1;
+  static const ImWchar ranges[] =
+  {
+      0x0020, 0x007E, // Basic Latin + Latin Supplement
+      0,
+  };
+  fontConfig.GlyphRanges = &ranges[0];
   io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/ProggyTiny.ttf", 10.0f, &fontConfig);
 
   // alright we made our font. Dump that shit.
